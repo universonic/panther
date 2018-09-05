@@ -1,0 +1,17 @@
+:host {
+    @import "~@core/scss/index";
+
+    position: relative;
+
+    .editor, .form {
+        display: block;
+        // min-height: 400px;
+        // min-width: 600px;
+        overflow: auto;
+
+        // @include media-breakpoint-down(sm) {
+        //     min-height: 300px;
+        //     min-width: 400px;
+        // }
+    }
+}

@@ -1,0 +1,20 @@
+.page-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .page-body {
+        position: relative;
+        margin-top: 64px;
+        min-height: calc(100% - 64px);
+
+        & > :not(router-outlet) {
+            width: 100%;
+            min-width: 100%;
+        }
+    }
+}

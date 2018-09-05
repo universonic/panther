@@ -1,0 +1,134 @@
+# Panther daemon configuration file.
+# This file contains structured data over TOML language.
+# Reference: https://github.com/toml-lang/toml#user-content-spec
+#
+# Author: Alfred Chou <unioverlord@gmail.com>
+# Last Change:
+# Revision:
+
+[web]
+# Web server configuration
+
+# web::socket (string) is the unix socket that the API server listens on.
+# This should not be changed in most cases.
+#socket = "/var/run/panther.sock"
+
+# web::address (string) is the TCP socket address that the API server listens on.
+# Currently we do not support SSL/TLS secured connections.
+#address = "0.0.0.0"
+
+# web::port (integer) is the TCP socket port that the API server listens on.
+#port = 8080
+
+# web::www_root (string) is the root directory which stores the frontend files.
+#www_root = "/usr/share/panther/wwwroot"
+
+[executor]
+# Executor configuration
+
+# executor::schedule (string) is the CRON expression to be used by scheduler.
+# Valid CRON expression format: <sec> <min> <hour> <day-of-month> <month> <day-of-week>
+#
+#   Field name   | Mandatory? | Allowed values  | Allowed special characters
+#   ------------ | ---------- | --------------- | --------------------------
+#   Seconds      | Yes        | 0-59            | * / , -
+#   Minutes      | Yes        | 0-59            | * / , -
+#   Hours        | Yes        | 0-23            | * / , -
+#   Day of month | Yes        | 1-31            | * / , - ?
+#   Month        | Yes        | 1-12 or JAN-DEC | * / , -
+#   Day of week  | Yes        | 0-6 or SUN-SAT  | * / , - ?
+#
+# Specical characters:
+# - Asterisk ( * )
+#     The asterisk indicates that the cron expression will match for all values of the field;
+#     e.g., using an asterisk in the 5th field (month) would indicate every month.
+# - Slash ( / )
+#     Slashes are used to describe increments of ranges. For example 3-59/15 in the 1st field
+#     (minutes) would indicate the 3rd minute of the hour and every 15 minutes thereafter. 
+#     The form "*\/..." is equivalent to the form "first-last/...", that is, an increment over
+#     the largest possible range of the field. The form "N/..." is accepted as meaning 
+#     "N-MAX/...", that is, starting at N, use the increment until the end of that specific 
+#     range. It does not wrap around.
+# - Comma ( , )
+#     Commas are used to separate items of a list. For example, using "MON,WED,FRI" in the 5th
+#     field (day of week) would mean Mondays, Wednesdays and Fridays.
+# - Hyphen ( - )
+#     Hyphens are used to define ranges. For example, 9-17 would indicate every hour between 
+#     9am and 5pm inclusive.
+# - Question mark ( ? )
+#     Question mark may be used instead of '*' for leaving either day-of-month or day-of-week blank.
+#
+# Shorthand descriptors:
+# - @yearly (or @annually):
+#     Run once a year, midnight, Jan. 1st, which is equivalent to:
+#       0 0 0 1 1 *
+# - @monthly:
+#     Run once a month, midnight, first of month, which is equivalent to:
+#       0 0 0 1 * *
+# - @weekly:
+#     Run once a week, midnight between Sat/Sun, which is equivalent to:
+#       0 0 0 * * 0
+# - @daily (or @midnight):
+#     Run once a day, midnight, which is equivalent to:
+#       0 0 0 * * *
+# - @hourly:
+#     Run once an hour, beginning of hour, which is equivalent to:
+#       0 0 * * * *
+# - @every <duration>:
+#     User-specified interval. For example, "@every 1h30m10s" would indicate a schedule that 
+#     activates after 1 hour, 30 minutes, 10 seconds, and then every interval after that.
+#     Available time units are: "ns", "us" (or "µs"), "ms", "s", "m", and "h".
+#
+#schedule = "@daily"
+
+# executor::workers (integer) is the desired amount of workers. Keep in mind the workers shall never
+# less than 2, or there is very high possibility to cause server process to stuck. We recommend you
+# set it greater than 4.
+#workers = 8
+
+[database]
+# Configuration of database storage connection via CoreOS(R) etcd.
+
+# database::endpoints (string array) is a list of etcd server endpoints.
+endpoints = ["127.0.0.1:2379"]
+
+# database::user (string) is the name of the login user. Ignore this if password authentication
+# has not been enabled.
+#user =
+
+# database::password (string) is the login password. Ignore this if password authentication
+# has not been enabled.
+#password =
+
+    [database.ssl]
+    # SSL/TLS secured connection configuration
+
+    # database::ssl::enabled (boolean) indicates whether SSL/TLS connection has been enabled or not.
+    enabled = false
+
+    # database::ssl::server_name (string) indicates the SSL/TLS server name.
+    #server_name =
+
+    # database::ssl::cert (string) indicates the SSL/TLS certificate file.
+    #cert =
+
+    # database::ssl::key (string) indicates the SSL/TLS key file.
+    #key =
+
+    # database::ssl::ca_cert (string) indicates the SSL/TLS CA certificate file.
+    #ca_cert =
+
+[log]
+# Logging configuration
+
+# log::output (string) is the directory for server to log common output to.
+#output = "/var/log/panther"
+
+# log::level (integer) is the logging level.
+# Available levels:
+#   * 1: debug;
+#   * 2: info;
+#   * 3: warn;
+#   * 4: error;
+# Default: 2
+#level = 2

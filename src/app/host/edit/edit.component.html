@@ -1,0 +1,56 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+    <h2 mat-dialog-title>{{create? 'Create Host': 'Edit Host'}}</h2>
+</div>
+<mat-dialog-content>
+    <form class="form" [formGroup]="form" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px" (keyup.enter)="apply()">
+        <ng-container formGroupName="metadata">
+            <mat-form-field>
+                <input matInput placeholder="Name" formControlName="name" pattern="^[a-zA-Z]{1}[A-Za-z0-9_]*$" required>
+                <mat-hint align="start">Alias name of this host.</mat-hint>
+                <mat-error *ngIf="form.get('metadata.name').invalid">{{form.get('metadata.name').hasError('required')? 'Name must be specified.': (form.get('metadata.name').hasError('pattern')? 'Not a valid name.': 'Unexpected error.')}}</mat-error>
+            </mat-form-field>
+        </ng-container>
+        <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="0" fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="start end" fxLayoutGap="10px">
+            <mat-form-field fxFlex="1 1 auto">
+                <input matInput placeholder="SSH Address" formControlName="ssh_addr" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" required>
+                <mat-error *ngIf="form.get('ssh_addr').invalid">{{form.get('metadata.name').hasError('required')? 'A valid IP address is required.': (form.get('ssh_addr').hasError('pattern')? 'Not a valid IP address.': 'Unexpected error.')}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" placeholder="SSH Port" formControlName="ssh_port" required>
+                <mat-error *ngIf="form.get('ssh_port').invalid">{{form.get('ssh_port').hasError('required')? 'A valid port number is required.': (form.get('ssh_port').hasError('min') || form.get('ssh_port').hasError('max')? 'Not a valid port number between 1 and 65535.': 'Unexpected error.')}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div formGroupName="ssh_cred" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="0" fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="start end" fxLayoutGap="10px">
+            <mat-form-field fxFlex="1 1 auto">
+                <input matInput placeholder="SSH User" formControlName="user" pattern="^[a-zA-Z]{1}[A-Za-z0-9_]*$" required>
+                <mat-error *ngIf="form.get('ssh_cred.user').invalid">{{form.get('ssh_cred.user').hasError('required')? 'SSH login user must be specified.': (form.get('ssh_cred.user').hasError('pattern')? 'Not a valid user name.': 'Unexpected error.')}}</mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="1 1 auto">
+                <input matInput [type]="hideSSHPassword? 'password': 'text'" placeholder="SSH Password" formControlName="pass" pattern="^[^ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+$" required>
+                <mat-icon matSuffix (click)="hideSSHPassword = !hideSSHPassword" style="cursor: pointer">{{hideSSHPassword? 'visibility': 'visibility_off'}}</mat-icon>
+                <mat-error *ngIf="form.get('ssh_cred.pass').invalid">{{form.get('ssh_cred.pass').hasError('required')? 'SSH login password must be specified.': (form.get('ssh_cred.pass').hasError('pattern')? 'Password shall not contains whitespaces.': 'Unexpected error')}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div formGroupName="op_cred" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="0" fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="start end" fxLayoutGap="10px">
+            <mat-form-field fxFlex="1 1 auto">
+                <input matInput placeholder="Administrator" formControlName="user" pattern="^[a-zA-Z]{1}[A-Za-z0-9_]*$">
+                <mat-error *ngIf="form.get('op_cred.user').invalid">{{(!!form.get('op_cred.user').value !== !!form.get('op_cred.pass').value)? 'User name and password must be both specified or ommited.': (form.get('op_cred.user').hasError('pattern')? 'Not a valid user name.': 'Unexpected error.')}}</mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="1 1 auto">
+                <input matInput [type]="hideOpPassword? 'password': 'text'" placeholder="Password" formControlName="pass" pattern="^[^ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+$">
+                <mat-icon matSuffix (click)="hideOpPassword = !hideOpPassword" style="cursor: pointer">{{hideOpPassword? 'visibility': 'visibility_off'}}</mat-icon>
+                <mat-error *ngIf="form.get('op_cred.pass').invalid">{{(!!form.get('op_cred.user').value !== !!form.get('op_cred.pass').value)? 'User name and password must be both specified or ommited.': (form.get('op_cred.pass').hasError('pattern')? 'Password shall not contains whitespaces.': 'Unexpected error')}}</mat-error>
+            </mat-form-field>
+        </div>
+        <mat-form-field>
+            <textarea matInput cdkTextareaAutosize placeholder="Comment" formControlName="comment" #comment pattern="^[^\f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+$"></textarea>
+            <mat-error *ngIf="form.get('comment').invalid">{{form.get('comment').hasError('maxlength')? 'Comment should be no more than 32 characters.': form.get('comment').hasError('pattern')? 'Comment should not contains whitespace characters except common space.': 'Unexpected error'}}</mat-error>
+            <mat-hint align="start">(Optional) Extra infomation, such as its department or usage.</mat-hint>
+            <mat-hint align="end">{{comment.value.length}} / 32</mat-hint>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+    <button mat-button (click)="abort()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="apply()" [disabled]="form.invalid">OK</button>
+</mat-dialog-actions>

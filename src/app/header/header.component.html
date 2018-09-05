@@ -1,0 +1,13 @@
+<mat-toolbar color="primary" class="navbar">
+    <div fxLayout="row" fxLayoutAlign="start center" style="min-width: 100%">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <button mat-icon-button routerLink="/"><mat-icon>home</mat-icon></button>
+            <h1 class="title">{{header}}</h1>
+        </div>
+        <div fxFlex="1 1 auto">
+            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="16px">
+                <button mat-stroked-button routerLink="/host">Hosts</button>
+            </div>
+        </div>
+    </div>
+</mat-toolbar>

@@ -1,0 +1,10 @@
+:host {
+    .navbar {
+        position: fixed;
+        z-index: 2;
+
+        .title {
+            margin-left: 20px;
+        }
+    }
+}

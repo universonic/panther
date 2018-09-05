@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Delete Host</h2>
+<mat-dialog-content>
+    <p>This action cannot be undone. This will permanently delete them from the backend storage.</p>
+    <p>Do you really want to delete the following machines?</p>
+    <ul>
+        <li *ngFor="let each of data">{{each.metadata.name}}</li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end stretch" fxLayoutGap="10px">
+    <button mat-button (click)="abort()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="agree()">OK</button>
+</mat-dialog-actions>
