@@ -16,6 +16,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Order } from './types';
 
 @Injectable()
 export class ExecService {
@@ -90,16 +91,7 @@ export class ExecWebsocket {
         this.ws.close(1000, 'Done.');
     }
 
-    send(order: ExecOrder) {
+    send(order: Order) {
         this.ws.send(JSON.stringify(order));
     }
-}
-
-export class ExecOrder {
-    commands: ExecCommand[];
-}
-
-export class ExecCommand {
-    command?: string;
-    target: string;
 }

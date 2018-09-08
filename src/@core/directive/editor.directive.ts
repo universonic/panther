@@ -1,6 +1,7 @@
 import { Directive, EventEmitter, Output, ElementRef, Input, OnInit, OnDestroy, NgZone } from "@angular/core";
 import * as ace from "brace";
 import "brace/theme/chrome";
+import "brace/theme/dracula";
 import "brace/mode/abap";
 import "brace/mode/abc";
 import "brace/mode/actionscript";

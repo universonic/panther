@@ -66,14 +66,14 @@ const DefaultWatchChanSize = 100
 type WatchEventType uint8
 
 func (of WatchEventType) String() string {
-	if v, ok := WatchEventTypeName[byte(of)]; ok {
+	if v, ok := WatchEventTypeName[uint8(of)]; ok {
 		return v
 	}
 	return "<invalid>"
 }
 
 // WatchEventTypeName is used by stringer of WatchEventType
-var WatchEventTypeName = map[byte]string{
+var WatchEventTypeName = map[uint8]string{
 	0x01: "CREATE",
 	0x02: "UPDATE",
 	0x04: "DELETE",

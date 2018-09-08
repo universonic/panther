@@ -74,3 +74,37 @@ export enum SecuritySeverity {
     ImportantSec,
     ModerateSec,
 }
+
+export class Order {
+    commands: Command[];
+
+    constructor(
+        cmds: Command[],
+    ) {
+        this.commands = cmds;
+    }
+}
+
+export class Command {
+    target: string;
+    command?: string;
+
+    constructor(
+        target: string,
+        command?: string,
+    ) {
+        this.target = target;
+        if (command) {
+            this.command = command;
+        }
+    }
+}
+
+export class HostOperation {
+    metadata?: ObjectMeta;
+
+    /* There are some fields that have been omitted. */
+    command?: string;
+    state?: State;
+    data?: string;
+}

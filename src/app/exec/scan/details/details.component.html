@@ -1,1 +1,120 @@
 <ng-container [title-prefix]="name" title="Security Threat" title-suffix="Panther"></ng-container>
+<div class="container" fxFlex="1 1 auto" fxFlexFill>
+    <div [ngSwitch]="result.state" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+        <ng-container *ngSwitchCase="3">
+            Scanning this host...
+        </ng-container>
+        <ng-container *ngSwitchCase="4">
+            <div fxLayout="row" fxLayoutAlign="end center">
+                <button mat-raised-button color="primary" [disabled]="!selection.length" (click)="install()"> Install </button>
+            </div>
+            <mat-accordion multi="true">
+                <mat-expansion-panel *ngIf="dataSourceCritical && dataSourceCritical.data && dataSourceCritical.data.length">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+                            <mat-icon style="color: #c62828;">security</mat-icon>
+                            <span style="font-size: 18px;">Critical Updates</span>
+                            <span class="badge">{{dataSourceCritical?.data?.length}}</span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table mat-table [dataSource]="dataSourceCritical" style="min-width: 100%;">
+        
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox color="primary" (change)="$event? toggleCritical(): null" [checked]="selectionCritical.hasValue() && isCriticalAllSelected()" [indeterminate]="selectionCritical.hasValue() && !isCriticalAllSelected()" matTooltip="Select all"></mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let elem">
+                                <mat-checkbox color="primary" (click)="$event.stopPropagation()" (change)="$event? selectionCritical.toggle(elem): null" [checked]="selectionCritical.isSelected(elem)"></mat-checkbox>
+                            </td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef> CVE ID </th>
+                            <td mat-cell *matCellDef="let elem" class="name"><a [href]="'https://cve.mitre.org/cgi-bin/cvename.cgi?name='+elem.cve_id" matTooltip="View details on https://cve.mitre.org">{{elem.cve_id}}</a></td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="package">
+                            <th mat-header-cell *matHeaderCellDef> Update </th>
+                            <td mat-cell *matCellDef="let elem" class="name"> {{elem.package}} </td>
+                        </ng-container>
+        
+                    </table>
+                </mat-expansion-panel>
+                <mat-expansion-panel *ngIf="dataSourceImportant && dataSourceImportant.data && dataSourceImportant.data.length">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+                            <mat-icon style="color: #f9a825;">security</mat-icon>
+                            <span style="font-size: 18px;">Important Updates</span>
+                            <span class="badge">{{dataSourceImportant?.data?.length}}</span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table mat-table [dataSource]="dataSourceImportant" style="min-width: 100%;">
+        
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox color="primary" (change)="$event? toggleImportant(): null" [checked]="selectionImportant.hasValue() && isImportantAllSelected()" [indeterminate]="selectionImportant.hasValue() && !isImportantAllSelected()" matTooltip="Select all"></mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let elem">
+                                <mat-checkbox color="primary" (click)="$event.stopPropagation()" (change)="$event? selectionImportant.toggle(elem): null" [checked]="selectionImportant.isSelected(elem)"></mat-checkbox>
+                            </td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef> CVE ID </th>
+                            <td mat-cell *matCellDef="let elem" class="name"><a [href]="'https://cve.mitre.org/cgi-bin/cvename.cgi?name='+elem.cve_id" matTooltip="View details on https://cve.mitre.org">{{elem.cve_id}}</a></td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="package">
+                            <th mat-header-cell *matHeaderCellDef> Update </th>
+                            <td mat-cell *matCellDef="let elem" class="name"> {{elem.package}} </td>
+                        </ng-container>
+        
+                    </table>
+                </mat-expansion-panel>
+                <mat-expansion-panel *ngIf="dataSourceModerate && dataSourceModerate.data && dataSourceModerate.data.length">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+                            <mat-icon style="color: #0288d1;">security</mat-icon>
+                            <span style="font-size: 18px;">Moderate Updates</span>
+                            <span class="badge">{{dataSourceModerate?.data?.length}}</span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table mat-table [dataSource]="dataSourceModerate" style="min-width: 100%;">
+        
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox color="primary" (change)="$event? toggleModerate(): null" [checked]="selectionModerate.hasValue() && isModerateAllSelected()" [indeterminate]="selectionModerate.hasValue() && !isModerateAllSelected()" matTooltip="Select all"></mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let elem">
+                                <mat-checkbox color="primary" (click)="$event.stopPropagation()" (change)="$event? selectionModerate.toggle(elem): null" [checked]="selectionModerate.isSelected(elem)"></mat-checkbox>
+                            </td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef> CVE ID </th>
+                            <td mat-cell *matCellDef="let elem" class="name"><a [href]="'https://cve.mitre.org/cgi-bin/cvename.cgi?name='+elem.cve_id" matTooltip="View details on https://cve.mitre.org">{{elem.cve_id}}</a></td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="package">
+                            <th mat-header-cell *matHeaderCellDef> Update </th>
+                            <td mat-cell *matCellDef="let elem" class="name"> {{elem.package}} </td>
+                        </ng-container>
+        
+                    </table>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </ng-container>
+        <ng-container *ngSwitchCase="5">
+            <div>Ops, something went wrong with this host.</div>
+        </ng-container>
+    </div>
+</div>

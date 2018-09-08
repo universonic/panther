@@ -82,7 +82,7 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 
 	in.logger.Infow("Websocket session initiated with params: ", "mode", mode, "watch", watch)
 
-	defer func() {
+	recoverFromPanic := func() {
 		defer in.logger.Sync()
 		if r := recover(); r != nil {
 			in.logger.Errorf("An unexpected error occurred: %v", r)
@@ -93,7 +93,8 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 				time.Time{}, // Exit right now.
 			)
 		}
-	}()
+	}
+	defer recoverFromPanic()
 
 	cache := NewCache()
 
@@ -152,6 +153,7 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 		result = result[:0]
 
 		go func() {
+			defer recoverFromPanic()
 			defer in.logger.Sync()
 			for event := range eventChan {
 				cv := genericStorage.NewSystemScan()
@@ -301,7 +303,7 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 			cache.Set(op.GetName(), op)
 		}
 
-		for finished := 0; finished >= len(commands); {
+		for finished := 0; finished <= len(commands); {
 			event := <-eventChan
 			cv := genericStorage.NewHostOperation()
 			err = event.Unmarshal(cv)
@@ -324,8 +326,8 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Anyway, we still tell the client that we are exiting. This is preserved for
-		// extra stability assurance.
+		// Anyway, we still tell the client that we are exiting. This is preserved for extra
+		// stability assurance.
 		if len(commands) != len(order.Commands) {
 			conn.WriteControl(
 				websocket.CloseMessage,
@@ -340,7 +342,6 @@ func (in *Handler) Exec(w http.ResponseWriter, r *http.Request) {
 			time.Time{}, // Exit right now.
 		)
 	}
-
 }
 
 // WSOrderRequest is the inner request of websocket. Once the server accepts an order, it

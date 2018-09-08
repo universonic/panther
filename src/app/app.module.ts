@@ -49,7 +49,7 @@ import { AppComponent } from './app.component';
 import { AppHeaderComponent, HeaderService } from './header';
 import { CoreModule } from '@core';
 import { AppHostComponent, AppHostConfirmComponent, AppHostEditComponent } from './host';
-import { AppExecScanComponent, AppExecScanDetailsComponent } from './exec';
+import { AppExecScanComponent, AppExecScanDetailsComponent, AppExecCmdComponent } from './exec';
 
 @NgModule({
     declarations: [
@@ -60,10 +60,12 @@ import { AppExecScanComponent, AppExecScanDetailsComponent } from './exec';
         AppHostComponent,
         AppHostConfirmComponent,
         AppHostEditComponent,
+        AppExecCmdComponent,
     ],
     entryComponents: [
         AppHostConfirmComponent,
-        AppHostEditComponent
+        AppHostEditComponent,
+        AppExecCmdComponent,
     ],
     imports: [
         BrowserModule,

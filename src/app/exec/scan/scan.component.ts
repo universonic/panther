@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HeaderService } from 'app/header';
-import { ExecService, SystemScan, ExecWebsocket } from '@core';
+import { ExecService, SystemScan, ExecWebsocket, Order, Command } from '@core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Subscription } from 'rxjs';
@@ -42,7 +42,7 @@ export class AppExecScanComponent implements OnInit, OnDestroy {
         });
         this.cmd = this.exec.forCmd();
         this.cmdSubscription = this.cmd.connect().subscribe((data: any) => {
-            console.log(data);            
+            console.log(data);
         });
     }
 
@@ -70,5 +70,14 @@ export class AppExecScanComponent implements OnInit, OnDestroy {
         this.isAllSelected() ?
             this.selection.clear() :
             this.dataSource.data.forEach(row => this.selection.select(row));
+    }
+
+    rescan() {
+        const cmds: Command[] = [];
+        for (let each of this.selection.selected) {
+            cmds.push(new Command(each.metadata.name));
+        }
+        this.scan.send(new Order(cmds));
+        this.selection.clear();
     }
 }

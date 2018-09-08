@@ -8,6 +8,11 @@
                     <input matInput (keyup)="search($event.target.value)" placeholder="Search">
                 </mat-form-field>
             </div>
+            <div fxLayout="row" fxLayoutAlign="start stretch" style="margin-left: 20px;">
+                <button mat-raised-button color="primary" (click)="rescan()" [disabled]="!selection.selected.length">
+                    <mat-icon>autorenew</mat-icon> Refresh
+                </button>
+            </div>
         </div>
         <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDisableClear matSortDirection="asc" class="mat-elevation-z4">
 
