@@ -1,0 +1,29 @@
+matrix:
+  include:
+    - language: node_js
+      cache:
+        yarn: true
+        directories:
+          - node_modules
+      node_js:
+        - '8.11.3'
+      install:
+        - yarn
+      before_script:
+        - yarn global add @angular/cli
+      script:
+        - yarn run build
+
+    - language: go
+      go:
+        - '1.11'
+      before_install:
+        - go get -u github.com/golang/dep/cmd/dep
+      install:
+        - dep ensure -v
+      script:
+        - go build github.com/universonic/panther/cmd/...
+
+notifications:
+  email:
+    - unioverlord@gmail.com
